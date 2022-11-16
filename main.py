@@ -40,7 +40,6 @@ def start_message(message: Message):
     )
 
 
-
 @bot.message_handler(content_types='text', func=lambda x: x.text in SRO_TYPES)
 def new_request_to_SRO(message: Message):
 
@@ -113,10 +112,11 @@ def process_text(message:Message):
         else:
             request.state = change_state(state.title, "Подтверждение данных").id
             text = TEMPLATES["need_check_projects"].format(
-                fio=request.full_name,
-                email=request.email,
-                phone=request.phone
-            )
+                    fio=request.full_name,
+                    email=request.email,
+                    phone=request.phone,
+                    region=request.region,
+                )
             bot.send_message(
                 chat_id=message.chat.id, 
                 text=text,
@@ -136,6 +136,21 @@ def process_text(message:Message):
             org=request.organization
         )
 
+        bot.send_message(
+            chat_id=message.chat.id, 
+            text=text,
+            reply_markup=succes_kbr
+        )
+        session.commit()
+        return None
+    elif state.to_do == "Подтверждение данных":
+        text = TEMPLATES["need_check_builders"].format(
+            fio=request.full_name,
+            email=request.email,
+            phone=request.phone,
+            region=request.region,
+            org=request.organization
+        )
         bot.send_message(
             chat_id=message.chat.id, 
             text=text,
@@ -169,6 +184,46 @@ def success_informatiom(message: CallbackQuery):
     bot.send_message(
         chat_id=message.message.chat.id, 
         text=text,
+    )
+
+
+@bot.callback_query_handler(func=lambda call: call.data == "resume")
+def resume_request(message: CallbackQuery):
+    user = get_user(message, session)
+    request: UsersRequest = user.request[-1]
+    state = session.query(RequestState).get(request.state)
+    kb = []
+    if user.check_state(BAD_STATES):
+        text=TEMPLATES["hello"]
+
+    elif state.to_do == "Ввод ФИО":
+        text=TEMPLATES["need_fio"]
+    
+    elif state.to_do == "Ввод организации":
+        text = TEMPLATES["need_org"]
+        
+    elif state.to_do == "Ввод почты":
+        text = TEMPLATES["need_email"]
+        
+    elif state.to_do == "Ввод телефона":
+        text = TEMPLATES["need_phone"]
+
+    elif state.to_do == "Ввод региона":
+        text = TEMPLATES["need_region"]
+    elif state.to_do == "Подтверждение данных":
+        text = TEMPLATES["need_check_builders"].format(
+            fio=request.full_name,
+            email=request.email,
+            phone=request.phone,
+            region=request.region,
+            org=request.organization
+        )
+        kb = succes_kbr
+        
+    bot.send_message(
+        chat_id=message.message.chat.id, 
+        text=text,
+        reply_markup=kb
     )
 
 
