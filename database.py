@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from pathlib import Path
 
-from settings import BASE_DIR
+BASE_DIR = Path(__file__).resolve().parent
 
 
 def create_db():

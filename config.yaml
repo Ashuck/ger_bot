@@ -1,6 +1,3 @@
-bot:
-  token: "1115228165:AAHM98pxQtMTUFgoGtMQVRCU5y4ALuFtNSg"
-
 SRO_types:
   - "СРО в области строительства"
   - "СРО в области проектирования"
@@ -19,6 +16,7 @@ templates:
   drop: "Составление заявки отменено.\nВыберите СРО, к которому желаете присоединиться"
   nothing_to_success: "Нечего подтверждать"
   nothing_to_drop: "Нечего отменять"
+  mail_text: "Новая заявка на вступление в {sro}.\n\nОрганизация: {org}\nФИО: {fio}\nemail: {email}\nТелефон: {phone}\nРегион: {region}"
 
 cities:
   - [Иваново, Москва]

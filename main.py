@@ -2,18 +2,23 @@ import telebot
 import os
 from telebot.types import Message, CallbackQuery
 
-from settings import TOKEN, TEMPLATES, SRO_TYPES
 from database import DB_NAME, Session
 from create_database import create_database
 
 from models.users import User
+from models.settings import Settings
 from models.user_requests import UsersRequest
 from models.request_states import RequestState
 
 from keyboards import reg_board, abort_kbr, succes_kbr, city_kbr
+from email_working import send_mail
 
+if not os.path.exists(DB_NAME):
+        create_database()
 
-bot = telebot.TeleBot(TOKEN, parse_mode="MARKDOWN")
+from settings import TOKEN, TEMPLATES, SRO_TYPES
+
+bot = telebot.TeleBot(TOKEN.first().value, parse_mode="MARKDOWN")
 
 
 def get_user(message, session) -> UsersRequest:
@@ -110,6 +115,7 @@ def process_text(message:Message):
             return None
 
         else:
+            request.region = "Не указывается"
             request.state = change_state(state.title, "Подтверждение данных").id
             text = TEMPLATES["need_check_projects"].format(
                     fio=request.full_name,
@@ -178,6 +184,28 @@ def success_informatiom(message: CallbackQuery):
         request.state = change_state(state.title, "Выполнена").id
         text = TEMPLATES["success"].format(purpes=state.title)
         session.commit()
+
+        if state.title == "СРО в области строительства" and request.region != "Иваново":
+            recipient = session.query(Settings).get("email_other").value
+
+        elif state.title == "СРО в области проектирования":
+            recipient = session.query(Settings).get("email_ivanovo").value
+
+        mail_text = TEMPLATES["mail_text"].format(
+            sro=state.title,
+            fio=request.full_name,
+            email=request.email,
+            phone=request.phone,
+            region=request.region,
+            org=request.organization
+        )
+
+        send_mail(
+            text=mail_text,
+            recipient=recipient,
+            user=session.query(Settings).get("email_sender").value,
+            password=session.query(Settings).get("email_sender_pass").value
+        )
     else:
         text = TEMPLATES["nothing_to_success"]
     
@@ -247,17 +275,11 @@ def success_informatiom(message: CallbackQuery):
             text=TEMPLATES["nothing_to_drop"],
         )
 
-
 if __name__ == "__main__":
-    if not os.path.exists(DB_NAME):
-        create_database()
-
+     
     session = Session()
     BAD_STATES = session.query(RequestState).filter(
         ~RequestState.to_do.in_(["Отменена", "Выполнена"])
     )
 
     bot.infinity_polling()
-    
-
-    
