@@ -115,7 +115,7 @@ def process_text(message:Message):
                     fio=request.full_name,
                     email=request.email,
                     phone=request.phone,
-                    region=request.region,
+                    org=request.organization
                 )
             bot.send_message(
                 chat_id=message.chat.id, 
@@ -176,7 +176,7 @@ def success_informatiom(message: CallbackQuery):
     state = session.query(RequestState).get(request.state)
     if state.to_do == "Подтверждение данных":
         request.state = change_state(state.title, "Выполнена").id
-        text = TEMPLATES["success"]
+        text = TEMPLATES["success"].format(purpes=state.title)
         session.commit()
     else:
         text = TEMPLATES["nothing_to_success"]
