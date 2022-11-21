@@ -27,6 +27,7 @@ def get_user(message, session) -> UsersRequest:
     if user is None:
         user = User(message)
         session.add(user)
+        
         session.commit()
     return user
 

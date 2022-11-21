@@ -24,4 +24,7 @@ class User(Base):
     def check_state(self, bad_states):
         self_states = set(map(lambda x: x.state, self.request))
         other_states = set(map(lambda x: x.id, bad_states))
-        return self_states.isdisjoint(other_states)
+        if not self_states:
+            return True
+        else:
+            return self_states.isdisjoint(other_states)
