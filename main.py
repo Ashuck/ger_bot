@@ -14,7 +14,7 @@ from keyboards import reg_board, abort_kbr, succes_kbr, city_kbr
 from email_working import send_mail
 
 if not os.path.exists(DB_NAME):
-        create_database()
+    create_database()
 
 from settings import TOKEN, TEMPLATES, SRO_TYPES
 

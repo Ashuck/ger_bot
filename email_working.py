@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 
 
 def send_mail(recipient, text, user, password):
-    server = 'smtp.yandex.ru'
+    server = 'mx.kdv37.ru'
 
     sender = user
     subject = 'Заявка на вступление в СРО от бота'
@@ -29,6 +29,6 @@ if __name__ == "__main__":
     send_mail(
         text="test",
         recipient="sizovad@ivgpu.com",
-        user="sizov210@yandex.ru",
-        password="zjqoxkieivsnstpz"
+        user="info@iossro37.ru",
+        password=r"G5bs36%u8w"
     )
