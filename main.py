@@ -186,11 +186,16 @@ def success_informatiom(message: CallbackQuery):
         text = TEMPLATES["success"].format(purpes=state.title)
         session.commit()
 
-        if state.title == "СРО в области строительства" and request.region != "Иваново":
-            recipient = session.query(Settings).get("email_other").value
         
-        elif state.title == "СРО в области строительства" and request.region == "Иваново":
+        
+        if state.title == "СРО в области строительства" and request.region == "Иваново":
             recipient = session.query(Settings).get("email_ivanovo").value
+
+        elif state.title == "СРО в области строительства" and request.region == "Кострома":
+            recipient = session.query(Settings).get("email_kostroma").value
+
+        elif state.title == "СРО в области строительства":
+            recipient = session.query(Settings).get("email_other").value
 
         elif state.title == "СРО в области проектирования":
             recipient = session.query(Settings).get("email_ivanovo").value
