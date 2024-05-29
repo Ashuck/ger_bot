@@ -160,9 +160,10 @@ def process_text(message:Message):
         )
         bot.send_message(
             chat_id=message.chat.id, 
-            text=text.replace("*", "\\*").replace("_", "\\_"),
+            # text=text.replace("*", "\\*").replace("_", "\\_"),
+            text=text,
             reply_markup=succes_kbr,
-            # parse_mode="HTML"
+            parse_mode="HTML"
         )
         session.commit()
         return None
