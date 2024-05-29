@@ -160,7 +160,7 @@ def process_text(message:Message):
         )
         bot.send_message(
             chat_id=message.chat.id, 
-            text=text,
+            text=text.replace("*", "\\*").replace("_", "\\_"),
             reply_markup=succes_kbr
         )
         session.commit()
@@ -220,7 +220,7 @@ def success_informatiom(message: CallbackQuery):
     
     bot.send_message(
         chat_id=message.message.chat.id, 
-        text=text,
+        text=text.replace("*", "\\*").replace("_", "\\_"),
     )
 
 
@@ -275,7 +275,7 @@ def success_informatiom(message: CallbackQuery):
         session.commit()
         bot.send_message(
             chat_id=message.message.chat.id, 
-            text=text,
+            text=text.replace("*", "\\*").replace("_", "\\_"),
             reply_markup=reg_board
         )
     else:
