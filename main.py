@@ -259,7 +259,7 @@ def resume_request(message: CallbackQuery):
         
     bot.send_message(
         chat_id=message.message.chat.id, 
-        text=text,
+        text=text.replace("*", "\\*").replace("_", "\\_"),
         reply_markup=kb
     )
 
