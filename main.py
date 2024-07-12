@@ -194,10 +194,12 @@ def success_informatiom(message: CallbackQuery):
             recipient = session.query(Settings).get("email_ivanovo").value
 
         elif state.title == "СРО в области строительства" and request.region == "Кострома":
-            recipient = session.query(Settings).get("email_kostroma").value
+            # recipient = session.query(Settings).get("email_kostroma").value
+            recipient = session.query(Settings).get("email_ivanovo").value
 
         elif state.title == "СРО в области строительства":
-            recipient = session.query(Settings).get("email_other").value
+            # recipient = session.query(Settings).get("email_other").value
+            recipient = session.query(Settings).get("email_ivanovo").value
 
         elif state.title == "СРО в области проектирования":
             recipient = session.query(Settings).get("email_ivanovo").value
